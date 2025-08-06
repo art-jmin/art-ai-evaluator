@@ -4,26 +4,13 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-import tensorflow as tf
-import torchvision.transforms as transforms
-import torch
-import torch.nn as nn
-from torchvision import models
 
 st.set_page_config(page_title="AI 캐릭터 그림 평가기", layout="centered")
 st.title("🎨 캐릭터 그림 AI 평가기")
 st.markdown("작품 사진을 업로드하면, AI가 그림 여부를 판단하고 평가해줍니다.")
 
-# ===== 그림 vs 사진 구분 모델 설정 (간단 CNN 전이 학습 기반) =====
-@st.cache_resource(allow_output_mutation=True)
-def load_clip_model():
-    model = models.resnet18(pretrained=True)
-    model.fc = nn.Linear(model.fc.in_features, 2)
-    return model
-
+# ===== 그림 vs 사진 간단 분류 =====
 def classify_image_type(image):
-    # 이 함수는 간단한 예시이므로 실제로는 학습된 모델 사용 필요
-    # 임시로 색상 수 기준으로 구분
     image = image.resize((224, 224))
     image_np = np.array(image.convert('RGB'))
     unique_colors = len(np.unique(image_np.reshape(-1, 3), axis=0))
